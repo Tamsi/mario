@@ -15,6 +15,9 @@
 		var bg;
 		var jumpSound;
 		var gameSound;
+		var mushroomSound;
+		var marioScore = 0;
+		var marioScoreText;
 		var map;
 		var backgroundLayer;
 		var blockLayer;
@@ -28,6 +31,7 @@
 			game.load.image('mushroom', 'images/mushroom.png');
 			game.load.audio('blop', 'sons/jump.mp3');
 			game.load.audio('music', 'sons/mario-theme.mp3');
+			game.load.audio('up', 'sons/mushroom soundEffect.mp3');
 		}
 
 		function create() {
@@ -36,6 +40,7 @@
 			
 			jumpSound = game.add.audio('blop');
 			gameSound = game.add.audio('music');
+			mushroomSound = game.add.audio('up');
 			//gameSound.play();
 
 			map = game.add.tilemap('tileMap');
@@ -52,6 +57,15 @@
 		    blocklayer.resizeWorld();
 
 		    game.physics.arcade.enable(blocklayer);
+
+		    marioScoreText = game.add.text(16, 16, 'player: 0', { fontSize: '32px', fill: '#000000' });
+
+		    mushroom = game.add.sprite(352, 130, 'mushroom');
+			game.physics.arcade.enable(mushroom);
+			mushroom.body.collideWorldBounds = false;
+			mushroom.scale.setTo(0.2, 0.2);
+			mushroom.body.gravity.y = 350;
+			mushroom.kill();
 
 			mario = game.add.sprite(0, 3*game.world.height/4 - 32, 'mario');
 			game.physics.arcade.enable(mario);
@@ -72,6 +86,7 @@
 
 			game.physics.arcade.collide(mario, blocklayer);
 			game.physics.arcade.collide(mushroom, blocklayer);
+			game.physics.arcade.collide(mario, mushroom, eat);
 
 
 			if (cursors.left.isDown){
@@ -99,16 +114,32 @@
 
 		function removeTile(mario, tile){
 
-			if(tile.worldX === 352){
-				//console.log(tile);
-				mushroom = game.add.sprite(352, 0, 'mushroom');
-			    game.physics.arcade.enable(mushroom);
-			    mushroom.body.collideWorldBounds = false;
-			    mushroom.scale.setTo(0.2, 0.2);
-			    mushroom.body.gravity.y = 350;
+			if(tile.worldX === 352 && tile.worldY === 144){
+				console.log(tile);
+				tile.index = 16;
+				mushroom.revive();
 			}
 
-			return false;
+			return true;
+		}
+
+		function eat(mario, mushroom){
+
+			mushroom.collideDown = true;
+			mushroom.collideUp = true;
+			mushroom.collideRight = true;
+			mushroom.collideLeft = true;
+
+			if(mario.body <= mushroom.body){
+
+				mushroom.kill();
+				mushroomSound.play();
+				marioScore += 1;
+				marioScoreText.text = 'player: ' + marioScore;
+				mario.scale.setTo(1.2, 1.2);
+
+			}
+
 		}	
 
 	</script>
