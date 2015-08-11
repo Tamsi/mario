@@ -41,7 +41,7 @@
 			jumpSound = game.add.audio('blop');
 			gameSound = game.add.audio('music');
 			mushroomSound = game.add.audio('up');
-			//gameSound.play();
+			gameSound.play();
 
 			map = game.add.tilemap('tileMap');
 		    map.addTilesetImage('SuperMarioBros-World1-1', 'map');
@@ -88,7 +88,6 @@
 			game.physics.arcade.collide(mushroom, blocklayer);
 			game.physics.arcade.collide(mario, mushroom, eat);
 
-
 			if (cursors.left.isDown){
 
 			 	mario.body.velocity.x = -150;
@@ -117,6 +116,7 @@
 			if(tile.worldX === 352 && tile.worldY === 144){
 				console.log(tile);
 				tile.index = 16;
+				blocklayer.dirty = true;
 				mushroom.revive();
 			}
 
@@ -137,9 +137,7 @@
 				marioScore += 1;
 				marioScoreText.text = 'player: ' + marioScore;
 				mario.scale.setTo(1.2, 1.2);
-
 			}
-
 		}	
 
 	</script>
