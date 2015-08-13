@@ -1,145 +1,17 @@
+<!DOCTYPE html>
 <html>
-	<html>
 	<head>
-		<title>Mario</title>
-		<script type="text/javascript" src="js/phaser.min.js"></script>
-
+			<meta charset="utf-8" />
+			<title>Mario Game</title>
+			<script type="text/javascript" src = "js/phaser.min.js"></script>
+			<script type="text/javascript" src = "js/states/boot.js"></script>
+			<script type="text/javascript" src = "js/states/load.js"></script>
+			<script type="text/javascript" src = "js/states/menu.js"></script>
+			<script type="text/javascript" src = "js/states/play.js"></script>
+			<script type="text/javascript" src = "js/states/win.js"></script>
+			<script type="text/javascript" src = "js/states/game.js"></script>
 	</head>
-
 	<body>
-		<script type="text/javascript">
-		var mario;
-		var mushroom;
-		var cursors;
-		var sol;
-		var bg;
-		var jumpSound;
-		var gameSound;
-		var mushroomSound;
-		var marioScore = 0;
-		var marioScoreText;
-		var map;
-		var backgroundLayer;
-		var blockLayer;
-		var game = new Phaser.Game(800, 240, Phaser.AUTO, '', {preload: preload, create: create, update: update });
-
-
-		function preload() {
-			game.load.spritesheet('mario', 'images/mario.png', 29, 32);
-			game.load.tilemap('tileMap', 'images/my-tilemap.json', null, Phaser.Tilemap.TILED_JSON);
-			game.load.image('map', 'assets/tilemaps/super_mario.png');
-			game.load.image('mushroom', 'images/mushroom.png');
-			game.load.audio('blop', 'sons/jump.mp3');
-			game.load.audio('music', 'sons/mario-theme.mp3');
-			game.load.audio('up', 'sons/mushroom soundEffect.mp3');
-		}
-
-		function create() {
-
-			game.physics.startSystem(Phaser.Physics.ARCADE);
-			
-			jumpSound = game.add.audio('blop');
-			gameSound = game.add.audio('music');
-			mushroomSound = game.add.audio('up');
-			gameSound.play();
-
-			map = game.add.tilemap('tileMap');
-		    map.addTilesetImage('SuperMarioBros-World1-1', 'map');
-
-		    map.setCollisionBetween(15, 16);
-		    map.setCollisionBetween(20, 25);
-		    map.setCollisionBetween(27, 29);
-		    map.setCollision(40);
-
-		    map.setTileIndexCallback(15, removeTile, this);
-
-		    blocklayer = map.createLayer('World1');
-		    blocklayer.resizeWorld();
-
-		    game.physics.arcade.enable(blocklayer);
-
-		    marioScoreText = game.add.text(16, 16, 'player: 0', { fontSize: '32px', fill: '#000000' });
-
-		    mushroom = game.add.sprite(352, 130, 'mushroom');
-			game.physics.arcade.enable(mushroom);
-			mushroom.body.collideWorldBounds = false;
-			mushroom.scale.setTo(0.2, 0.2);
-			mushroom.body.gravity.y = 350;
-			mushroom.kill();
-
-			mario = game.add.sprite(0, 3*game.world.height/4 - 32, 'mario');
-			game.physics.arcade.enable(mario);
-			mario.body.gravity.y = 300;
-			mario.body.collideWorldBounds = true;
-			mario.animations.add('gauche', [3, 4, 5, 4], 12, true);
-			mario.animations.add('droite', [10, 9, 8, 9], 12, true);
-
-			game.camera.follow(mario);
-			
-			//map.setTileLocationCallback(10, 6, 20, 2, removeTile, this);
-
-			cursors = game.input.keyboard.createCursorKeys();
-
-		}
-
-		function update() {
-
-			game.physics.arcade.collide(mario, blocklayer);
-			game.physics.arcade.collide(mushroom, blocklayer);
-			game.physics.arcade.collide(mario, mushroom, eat);
-
-			if (cursors.left.isDown){
-
-			 	mario.body.velocity.x = -150;
-			 	mario.animations.play('gauche');
-
-			} else if (cursors.right.isDown){
-
-			 	mario.body.velocity.x = 150;
-			 	mario.animations.play('droite');
-
-			} else {
-
-			 	mario.animations.stop();
-			 	mario.body.velocity.x = 0;
-			 	mario.frame = 6;
-			
-			} if (cursors.up.isDown && mario.body.onFloor()) {        		
-            	mario.body.velocity.y = -250;
-            	jumpSound.play();
-    		}
-
-		}
-
-		function removeTile(mario, tile){
-
-			if(tile.worldX === 352 && tile.worldY === 144){
-				console.log(tile);
-				tile.index = 16;
-				blocklayer.dirty = true;
-				mushroom.revive();
-			}
-
-			return true;
-		}
-
-		function eat(mario, mushroom){
-
-			mushroom.collideDown = true;
-			mushroom.collideUp = true;
-			mushroom.collideRight = true;
-			mushroom.collideLeft = true;
-
-			if(mario.body <= mushroom.body){
-
-				mushroom.kill();
-				mushroomSound.play();
-				marioScore += 1;
-				marioScoreText.text = 'player: ' + marioScore;
-				mario.scale.setTo(1.2, 1.2);
-			}
-		}	
-
-	</script>
-</body>
+		<div id="gameDiv"> </div>
+	</body>
 </html>
